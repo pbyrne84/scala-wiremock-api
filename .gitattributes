@@ -1,0 +1,3 @@
+*.scala text eol=lf
+*.sbt text eol=lf
+*.java text eol=lf
