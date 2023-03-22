@@ -28,15 +28,15 @@ object TestWireMock {
 
 class TestWireMock(val port: Int) {
 
-  private val wireMock = new WireMockServer(port)
+  val wireMockServer: WireMockServer = new WireMockServer(port)
 
   def reset(): Unit = {
-    if (!wireMock.isRunning) {
-      println(s"starting wiremock on port $port")
-      wireMock.start()
+    if (!wireMockServer.isRunning) {
+      println(s"starting wireMockServer on port $port")
+      wireMockServer.start()
     }
 
-    wireMock.resetAll()
+    wireMockServer.resetAll()
   }
 
   def stubAnyRequestResponse(responseDefinitionBuilder: ResponseDefinitionBuilder): Unit = {
@@ -48,7 +48,7 @@ class TestWireMock(val port: Int) {
   }
 
   private def stubFor(mappingBuilder: MappingBuilder): Unit = {
-    wireMock.stubFor(mappingBuilder)
+    wireMockServer.stubFor(mappingBuilder)
   }
 
   def stubExpectation(wiremockExpectation: WiremockExpectation): Unit = {
@@ -56,7 +56,7 @@ class TestWireMock(val port: Int) {
   }
 
   def verify(wiremockExpectation: WiremockExpectation): Unit = {
-    wireMock.verify(wiremockExpectation.asVerificationBuilder)
+    wireMockServer.verify(wiremockExpectation.asVerificationBuilder)
   }
 
 }

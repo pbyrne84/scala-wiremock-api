@@ -1,13 +1,7 @@
 package com.github.pbyrne84.wiremockapi.remapping
 
 import com.github.tomakehurst.wiremock.client.WireMock
-import com.github.tomakehurst.wiremock.matching.{
-  EqualToJsonPattern,
-  EqualToXmlPattern,
-  MatchesJsonPathPattern,
-  MatchesXPathPattern,
-  StringValuePattern
-}
+import com.github.tomakehurst.wiremock.matching._
 
 object BodyValueExpectation {
   import WireMockValueExpectation._

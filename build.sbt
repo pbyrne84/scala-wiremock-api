@@ -2,7 +2,7 @@ lazy val baseName = "scala-wiremock-api"
 
 scalaVersion := "2.13.8"
 
-val circeVersion = "0.14.2"
+val circeVersion = "0.14.5"
 val sttpVersion: String = "3.8.11"
 
 Test / parallelExecution := false
@@ -11,6 +11,9 @@ libraryDependencies ++= List(
   "com.github.tomakehurst" % "wiremock" % "2.27.2",
   "ch.qos.logback" % "logback-classic" % "1.4.6",
   "com.typesafe.scala-logging" %% "scala-logging" % "3.9.5",
+  "io.circe" %% "circe-core" % circeVersion % Test,
+  "io.circe" %% "circe-generic" % circeVersion % Test,
+  "io.circe" %% "circe-parser" % circeVersion % Test,
   "org.scalatest" %% "scalatest" % "3.2.15" % Test,
   "com.softwaremill.sttp.client3" %% "core" % sttpVersion % Test
 )

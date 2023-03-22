@@ -1,14 +1,17 @@
 package com.github.pbyrne84.wiremockapi
 import com.github.pbyrne84.wiremockapi.remapping.WiremockExpectation
+import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder
+import io.circe.{Json, ParsingFailure}
 import org.scalactic.Prettifier
 import org.scalatest.BeforeAndAfter
+import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import sttp.client3.{HttpClientSyncBackend, Identity, SttpBackend}
 import sttp.model.Header
 
-abstract class BaseSpec extends AnyWordSpec with Matchers with BeforeAndAfter {
+abstract class BaseSpec extends AnyWordSpec with ScalaFutures with ImpatientPatience with Matchers with BeforeAndAfter {
 
   private val caseClassPrettifier: CaseClassPrettifier = new CaseClassPrettifier
 
@@ -19,8 +22,10 @@ abstract class BaseSpec extends AnyWordSpec with Matchers with BeforeAndAfter {
     case a: Any => Prettifier.default(a)
   }
 
+  // namespace things as it makes ripping it out when it gets messy easy
   object wireMock {
     val instance: TestWireMock = TestWireMock.instance
+    val server: WireMockServer = instance.wireMockServer
     val port: Int = instance.port
     def reset(): Unit = instance.reset()
 
@@ -35,6 +40,20 @@ abstract class BaseSpec extends AnyWordSpec with Matchers with BeforeAndAfter {
     def verify(wiremockExpectation: WiremockExpectation): Unit =
       instance.verify(wiremockExpectation)
 
+  }
+
+  object json {
+
+    def unsafeParse(string: String): Json = {
+      io.circe.parser.parse(string) match {
+        case Left(value) => fail(new RuntimeException(s"Could not parse '$string''"))
+        case Right(value) => value
+      }
+    }
+
+    def parse(string: String): Either[ParsingFailure, Json] = {
+      io.circe.parser.parse(string)
+    }
   }
 
   object headers {

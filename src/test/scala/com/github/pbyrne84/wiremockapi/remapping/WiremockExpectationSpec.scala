@@ -2,20 +2,13 @@ package com.github.pbyrne84.wiremockapi.remapping
 
 import com.github.pbyrne84.wiremockapi.BaseSpec
 import com.github.tomakehurst.wiremock.client.{MappingBuilder, WireMock}
-import com.github.tomakehurst.wiremock.matching.{
-  ContentPattern,
-  MultiValuePattern,
-  RequestPattern,
-  RequestPatternBuilder,
-  StringValuePattern
-}
+import com.github.tomakehurst.wiremock.matching._
 import org.scalactic.anyvals.NonEmptyList
 import org.scalatest.prop.TableDrivenPropertyChecks
 import sttp.model.Uri
 
 import java.util
-import scala.jdk.CollectionConverters.CollectionHasAsScala
-import scala.jdk.CollectionConverters.MapHasAsScala
+import scala.jdk.CollectionConverters.{CollectionHasAsScala, MapHasAsScala}
 
 /**
   * Verify request with duplicate query params https://github.com/wiremock/wiremock/issues/398 is not supported yet
@@ -269,9 +262,9 @@ class WiremockExpectationSpec extends BaseSpec with TableDrivenPropertyChecks {
         builtWiremockExpectation.getRequest.getBodyPatterns.asScala.toList shouldBe List(bodyValueExpectation.pattern)
         builtWiremockVerification.getBodyPatterns.asScala.toList shouldBe List(bodyValueExpectation.pattern)
 
-        implicit class HeaderOps[A](map: java.util.Map[A, MultiValuePattern]) {
+        implicit class HeaderOps[A](maybeHeaderMap: java.util.Map[A, MultiValuePattern]) {
           def comparableHeaders: List[(A, StringValuePattern)] = {
-            Option(map)
+            Option(maybeHeaderMap)
               .getOrElse(new util.HashMap[A, MultiValuePattern]())
               .asScala
               .map(header => header._1 -> header._2.getValuePattern)

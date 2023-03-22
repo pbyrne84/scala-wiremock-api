@@ -1,15 +1,41 @@
 package com.github.pbyrne84.wiremockapi.remapping
 
+import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.{MappingBuilder, WireMock}
-import com.github.tomakehurst.wiremock.matching.{
-  MultipartValuePattern,
-  MultipartValuePatternBuilder,
-  RequestPatternBuilder,
-  StringValuePattern
-}
+import com.github.tomakehurst.wiremock.matching.{MultipartValuePattern, RequestPatternBuilder, StringValuePattern}
 
 object WiremockExpectation {
   val default: WiremockExpectation = WiremockExpectation()
+
+  def applyAsScenario(
+      expectations: List[WiremockExpectation],
+      server: WireMockServer,
+      scenarioInfoGenerator: ScenarioInfoGenerator = ScenarioInfoGenerator.default
+  ): List[WiremockExpectation] = {
+    val maxIndex = expectations.size - 1
+
+    expectations.zipWithIndex.map { case (expectation: WiremockExpectation, index) =>
+      val scenarioInfo: ScenarioInfo =
+        scenarioInfoGenerator.createScenarioInfo(scenarioInfoGenerator.scenarioName, index, maxIndex)
+
+      val scenarioWithExpectation = expectation.setScenarioInfo(scenarioInfo)
+
+      server.stubFor(scenarioWithExpectation.asExpectationBuilder)
+      scenarioWithExpectation
+    }
+  }
+
+  object ops {
+    implicit class WiremockExpectationsOps(expectations: List[WiremockExpectation]) {
+
+      def applyAsScenario(
+          server: WireMockServer,
+          scenarioInfoGenerator: ScenarioInfoGenerator = ScenarioInfoGenerator.default
+      ): List[WiremockExpectation] = {
+        WiremockExpectation.applyAsScenario(expectations, server, scenarioInfoGenerator)
+      }
+    }
+  }
 
 //  stubFor(
 //    any(urlPathEqualTo("/everything"))
@@ -29,6 +55,8 @@ object WiremockExpectation {
 //  );
 }
 
+case class ScenarioInfo(scenarioName: String, expectedCurrentState: String, nextState: String)
+
 case class WiremockExpectation(
     requestMethod: RequestMethod = RequestMethod.Any,
     urlExpectation: UrlExpectation = UrlExpectation.anyUrlMatcher,
@@ -37,11 +65,15 @@ case class WiremockExpectation(
     queryParamExpectations: Seq[NameValueExpectation] = List.empty,
     bodyExpectations: Seq[BodyValueExpectation] = List.empty,
     multiPartExpectations: Seq[WiremockMultiPartRequestBodyExpectation] = List.empty,
-    response: WiremockResponse = WiremockResponse.emptySuccess
+    response: WiremockResponse = WiremockResponse.emptySuccess,
+    maybeScenarioInfo: Option[ScenarioInfo] = None
 ) {
 
   def setMethod(requestMethod: RequestMethod): WiremockExpectation =
     copy(requestMethod = requestMethod)
+
+  def setScenarioInfo(scenarioInfo: ScenarioInfo): WiremockExpectation =
+    copy(maybeScenarioInfo = Some(scenarioInfo))
 
   def setUrlExpectation(urlExpectation: UrlExpectation): WiremockExpectation =
     copy(urlExpectation = urlExpectation)
@@ -67,12 +99,22 @@ case class WiremockExpectation(
   def withMultiPartRequestBodyExpectation(bodyExpectation: WiremockMultiPartRequestBodyExpectation) =
     copy(multiPartExpectations = multiPartExpectations :+ bodyExpectation)
 
-  def withResponse(wiremockResponse: WiremockResponse) =
+  def withResponse(wiremockResponse: WiremockResponse): WiremockExpectation =
     copy(response = wiremockResponse)
 
   def asExpectationBuilder: MappingBuilder = {
     // This is all going to mutate :(
-    val mappingBuilder: MappingBuilder = requestMethod.asMappingBuilder(urlExpectation)
+
+    val mappingBuilder: MappingBuilder =
+      maybeScenarioInfo
+        .map { scenarioInfo =>
+          requestMethod
+            .asMappingBuilder(urlExpectation)
+            .inScenario(scenarioInfo.scenarioName)
+            .whenScenarioStateIs(scenarioInfo.expectedCurrentState)
+            .willSetStateTo(scenarioInfo.nextState)
+        }
+        .getOrElse(requestMethod.asMappingBuilder(urlExpectation))
 
     headerExpectations.foreach(expectation => mappingBuilder.withHeader(expectation.name, expectation.pattern))
     cookieExpectations.foreach(expectation => mappingBuilder.withCookie(expectation.name, expectation.pattern))
