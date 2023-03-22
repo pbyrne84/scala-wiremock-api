@@ -2,11 +2,17 @@ package com.github.pbyrne84.wiremockapi.remapping
 
 import com.github.tomakehurst.wiremock.client.{ResponseDefinitionBuilder, WireMock}
 
+object ResponseBody {
+  def jsonBody(json: String): JsonResponseBody = JsonResponseBody(json)
+  def binaryBody(value: List[Byte]): BinaryResponseBody = BinaryResponseBody(value)
+  def stringBody(string: String): StringResponseBody = StringResponseBody(string)
+}
+
 sealed abstract class ResponseBody
-case object EmptyResponse extends ResponseBody
-case class BinaryBody(value: List[Byte]) extends ResponseBody
-case class StringBody(value: String) extends ResponseBody
-case class JsonBody(value: String) extends ResponseBody {
+case object EmptyResponseBody extends ResponseBody
+case class BinaryResponseBody(value: List[Byte]) extends ResponseBody
+case class StringResponseBody(value: String) extends ResponseBody
+case class JsonResponseBody(value: String) extends ResponseBody {
   val jsonHeader: (String, String) = "Content-Type" -> "application/json"
 }
 
@@ -19,12 +25,13 @@ object WiremockResponse {
     WiremockResponse(status = redirectHeader.status)
       .withHeader("Location", redirectHeader.uri.toString)
   }
+
 }
 
 case class WiremockResponse(
     status: Int = 200,
     headers: List[(String, List[String])] = List.empty,
-    responseBody: ResponseBody = EmptyResponse
+    responseBody: ResponseBody = EmptyResponseBody
 ) {
 
   def withStatus(status: Int): WiremockResponse =
@@ -41,16 +48,16 @@ case class WiremockResponse(
     val builder = WireMock.aResponse().withStatus(status)
 
     responseBody match {
-      case EmptyResponse =>
+      case EmptyResponseBody =>
         ()
 
-      case BinaryBody(value) =>
+      case BinaryResponseBody(value) =>
         builder.withBody(value.toArray)
 
-      case StringBody(value) =>
+      case StringResponseBody(value) =>
         builder.withBody(value)
 
-      case jsonBody: JsonBody =>
+      case jsonBody: JsonResponseBody =>
         builder
           .withBody(jsonBody.value)
           .withHeader(jsonBody.jsonHeader._1, jsonBody.jsonHeader._2)

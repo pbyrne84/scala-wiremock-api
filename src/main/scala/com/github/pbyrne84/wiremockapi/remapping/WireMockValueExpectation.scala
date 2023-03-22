@@ -1,7 +1,7 @@
 package com.github.pbyrne84.wiremockapi.remapping
 
 import com.github.tomakehurst.wiremock.client.WireMock
-import com.github.tomakehurst.wiremock.matching.{EqualToXmlPattern, StringValuePattern}
+import com.github.tomakehurst.wiremock.matching.StringValuePattern
 
 // just simplify the api a bit for finger reasons as it is often easier to google to use the api as there is so
 // much in the WireMock class

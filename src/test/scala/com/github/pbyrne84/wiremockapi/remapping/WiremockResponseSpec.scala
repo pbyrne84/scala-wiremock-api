@@ -1,9 +1,6 @@
 package com.github.pbyrne84.wiremockapi.remapping
 
 import com.github.pbyrne84.wiremockapi.BaseSpec
-import org.scalatest.BeforeAndAfter
-import org.scalatest.prop.TableDrivenPropertyChecks
-import sttp.model.StatusCode
 import org.scalatest.prop.TableDrivenPropertyChecks
 import sttp.model.{Header, StatusCode}
 class WiremockResponseSpec extends BaseSpec with TableDrivenPropertyChecks {
@@ -59,7 +56,7 @@ class WiremockResponseSpec extends BaseSpec with TableDrivenPropertyChecks {
 
       val wirMockResponse = WiremockResponse()
         .withResponseBody(
-          JsonBody(
+          JsonResponseBody(
             jsonContent
           )
         )
