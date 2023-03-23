@@ -27,7 +27,7 @@ class WiremockExpectationSpec extends BaseSpec with TableDrivenPropertyChecks {
   )
   // Extension methods for tuples to expectation, a bit more finger friendly.
 
-  import WireMockValueExpectation._
+  import WireMockValueExpectation.ops._
 
   private val allOperations = List(
     ("name1", "value1").asEqualTo,

@@ -13,7 +13,7 @@ case object EmptyResponseBody extends ResponseBody
 case class BinaryResponseBody(value: List[Byte]) extends ResponseBody
 case class StringResponseBody(value: String) extends ResponseBody
 case class JsonResponseBody(value: String) extends ResponseBody {
-  val jsonHeader: (String, String) = "Content-Type" -> "application/json"
+  val jsonHeader: (String, String) = "content-type" -> "application/json"
 }
 
 object WiremockResponse {
@@ -23,7 +23,7 @@ object WiremockResponse {
   // Utility just to make the choice easier hiding the magic number element
   def redirectResponse(redirectHeader: RedirectHeader): WiremockResponse = {
     WiremockResponse(status = redirectHeader.status)
-      .withHeader("Location", redirectHeader.uri.toString)
+      .withHeader("location", redirectHeader.uri.toString)
   }
 
 }
