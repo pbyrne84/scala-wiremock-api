@@ -5,8 +5,6 @@ import com.github.pbyrne84.wiremockapi.remapping.RequestMethod.Post
 
 class LooseWiremockExpectationTightVerificationExampleSpec extends BaseSpec {
 
-  import sttp.client3._
-
   before {
     reset()
   }
