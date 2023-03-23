@@ -7,38 +7,40 @@ import com.github.tomakehurst.wiremock.matching.StringValuePattern
 // much in the WireMock class
 
 object WireMockValueExpectation {
-  implicit class TupleStringStringWireMockOps(tuple: (String, String)) {
-    val (name, value) = tuple
+  object ops {
+    implicit class TupleStringStringWireMockOps(tuple: (String, String)) {
+      val (name, value) = tuple
 
-    def asContaining: NameValueExpectation = NameValueExpectation(name, WireMock.containing(value))
+      def asContaining: NameValueExpectation = NameValueExpectation(name, WireMock.containing(value))
 
-    def asEqualTo: NameValueExpectation = NameValueExpectation(name, WireMock.equalTo(value))
+      def asEqualTo: NameValueExpectation = NameValueExpectation(name, WireMock.equalTo(value))
 
-    def asMatching: NameValueExpectation = NameValueExpectation(name, WireMock.matching(value))
+      def asMatching: NameValueExpectation = NameValueExpectation(name, WireMock.matching(value))
 
-    def asEqualToXml: NameValueExpectation = NameValueExpectation(name, WireMock.equalToXml(value))
+      def asEqualToXml: NameValueExpectation = NameValueExpectation(name, WireMock.equalToXml(value))
 
-    def asMatchingXPath: NameValueExpectation = NameValueExpectation(name, WireMock.matchingXPath(value))
+      def asMatchingXPath: NameValueExpectation = NameValueExpectation(name, WireMock.matchingXPath(value))
 
-    def asEqualToJson: NameValueExpectation = NameValueExpectation(name, WireMock.equalToJson(value))
+      def asEqualToJson: NameValueExpectation = NameValueExpectation(name, WireMock.equalToJson(value))
 
-    def asMatchingJsonPath: NameValueExpectation = NameValueExpectation(name, WireMock.matchingJsonPath(value))
-  }
+      def asMatchingJsonPath: NameValueExpectation = NameValueExpectation(name, WireMock.matchingJsonPath(value))
+    }
 
-  implicit class StringWireMockOps(value: String) {
-    def asContaining: StringValuePattern = WireMock.containing(value)
+    implicit class StringWireMockOps(value: String) {
+      def asContaining: StringValuePattern = WireMock.containing(value)
 
-    def asEqualTo: StringValuePattern = WireMock.equalTo(value)
+      def asEqualTo: StringValuePattern = WireMock.equalTo(value)
 
-    def asMatching: StringValuePattern = WireMock.matching(value)
+      def asMatching: StringValuePattern = WireMock.matching(value)
 
-    def asEqualToXml: StringValuePattern = WireMock.equalToXml(value)
+      def asEqualToXml: StringValuePattern = WireMock.equalToXml(value)
 
-    def asMatchingXPath: StringValuePattern = WireMock.matchingXPath(value)
+      def asMatchingXPath: StringValuePattern = WireMock.matchingXPath(value)
 
-    def asEqualToJson: StringValuePattern = WireMock.equalToJson(value)
+      def asEqualToJson: StringValuePattern = WireMock.equalToJson(value)
 
-    def asMatchingJsonPath: StringValuePattern = WireMock.matchingJsonPath(value)
+      def asMatchingJsonPath: StringValuePattern = WireMock.matchingJsonPath(value)
+    }
   }
 
 }

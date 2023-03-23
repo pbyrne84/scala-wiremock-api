@@ -4,7 +4,7 @@ import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.matching._
 
 object BodyValueExpectation {
-  import WireMockValueExpectation._
+  import WireMockValueExpectation.ops._
   val any: BodyValueExpectation = BodyValueExpectation(".*".asMatching)
   def equalsJson(json: String): BodyValueExpectation = BodyValueExpectation(json.asEqualToJson)
   def matchesJsonPath(json: String): BodyValueExpectation = BodyValueExpectation(json.asMatchingJsonPath)
@@ -29,7 +29,6 @@ object BodyValueExpectation {
 
     }
   }
-
 }
 
 /**
