@@ -62,7 +62,8 @@ abstract class BaseSpec extends AnyWordSpec with ScalaFutures with ImpatientPati
       "content-encoding",
       "server",
       "matched-stub-id",
-      "vary"
+      "vary",
+      ":status"
     ).sorted
   }
 

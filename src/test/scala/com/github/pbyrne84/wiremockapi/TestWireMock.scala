@@ -14,7 +14,7 @@ object TestWireMock {
 
   private def detectFreePort: Int = {
     // Need to make sure it shuts down after calculation
-    Using(new ServerSocket(0)) { serverSocket: ServerSocket =>
+    Using(new ServerSocket(0)) { (serverSocket: ServerSocket) =>
       serverSocket.getLocalPort
     } match {
       case Failure(exception) =>

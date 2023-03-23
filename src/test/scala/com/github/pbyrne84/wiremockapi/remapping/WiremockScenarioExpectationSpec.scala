@@ -34,8 +34,8 @@ class WiremockScenarioExpectationSpec extends BaseSpec {
       val response3 = request.send(sttpBackend)
 
       response1.code.code shouldBe 200
-      response2.code.code shouldBe 200
-      response3.code.code shouldBe 200
+      response2.code.code shouldBe 201
+      response3.code.code shouldBe 202
 
       response1.body.flatMap(json.parse) shouldBe Right(expectedJsonResponseBody1)
       response2.body.flatMap(json.parse) shouldBe Right(expectedJsonResponseBody2)
@@ -54,6 +54,7 @@ class WiremockScenarioExpectationSpec extends BaseSpec {
       jsonResponseBody -> WiremockExpectation.default
         .withResponse(
           WiremockResponse.emptySuccess
+            .withStatus(200 + index)
             .withResponseBody(ResponseBody.jsonBody(jsonResponseBody.spaces2))
         )
     }
