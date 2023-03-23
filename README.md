@@ -1,5 +1,23 @@
 # scala-wiremock-api
 
+Note when using wiremock is very handy to have a plain logger setup for the test so wiremock's output is readable.
+
+e.g.
+```
+-------------------------------
+| Closest stub                                             | Request                                                  |
+-----------------------------------------------------------------------------------------------------------------------
+                                                           |
+PATCH                                                      | DELETE               <<<<< HTTP method does not match
+[regex] .*                                                 | /                    <<<<< null. URLs must start with a /
+                                                           |
+                                                           |
+-----------------------------------------------------------------------------------------------------------------------
+```
+
+Also, it is very useful to have a wiremock instance per api we need to fake. If this is not done things like output
+on nearest match stop making any sense neutering the ability of wiremock to be friendly.
+
 ## Intro
 
 Not the first time I have written this code. Wiremock's use of builders and static imports make 
@@ -124,7 +142,7 @@ There likely needs to be some Pact testing for things like backwards compatibili
 that level then work out better practices in the development of the software, work smarter not harder. Working harder
 also means more tiresome and being tired leads to more mistakes.
 
-### Mechanism
+## Mechanism
 
 There is simply a few case classes with the main one **WiremockExpectation** having **asExpectationBuilder** and 
 **asVerificationBuilder** operations. This enables the ability to do the main loose expectation then use the copy 
@@ -151,6 +169,99 @@ case class JsonResponseBody(value: String) extends ResponseBody {
 }
 ```
 
+### Example LooseWiremockExpectationTightVerificationExampleSpec
+<https://github.com/pbyrne84/scala-wiremock-api/blob/main/src/test/scala/com/github/pbyrne84/wiremockapi/remapping/LooseWiremockExpectationTightVerificationExampleSpec.scala>
+
+```scala
+class LooseWiremockExpectationTightVerificationExampleSpec extends BaseSpec {
+
+  before {
+    reset()
+  }
+
+  // Simple example where 404's could lead to confusion.
+  "Using a loose expectation and tight verification" should {
+    "create a test we can be sure is correct easily" in {
+
+      // language=json
+      val expectedBody1 =
+        """
+          |{"payload-1" : "value-1"}
+          |""".stripMargin
+
+      // language=json
+      val expectedBody2 =
+        """
+          |{"payload-2" : "value-2"}
+          |""".stripMargin
+
+      // We do not care about header checks and body checks at this point, body checks are pretty troublesome
+      // as people can use the string expectation instead of the json expectation meaning the expectation is not
+      // json formatting safe.
+      val firstCallLooseExpectation =
+        WiremockExpectation.default
+          .setMethod(Post) // we could skip the method here and add it later but method is pretty hard to fail on
+          .setUrlExpectation(UrlExpectation.equalsPath("/api-path-1"))
+
+      val secondCallLooseExpectation =
+        WiremockExpectation.default
+          .setMethod(Post) // we could skip the method here and add it later but method is pretty hard to fail on
+          .setUrlExpectation(UrlExpectation.equalsPath("/api-path-2"))
+
+      wireMock.stubExpectation(firstCallLooseExpectation)
+      wireMock.stubExpectation(secondCallLooseExpectation)
+
+      val result = for {
+        _ <- callServer(path = "api-path-1", body = expectedBody1)
+        _ <- callServer(path = "api-path-2", body = expectedBody2)
+      } yield true
+
+      // A None can ne cause by either call failing
+      result shouldBe Some(true)
+
+      import WireMockValueExpectation.ops._
+
+      val paramExpectation = ("param1" -> "paramValue1").asEqualTo
+
+      wireMock.verify(
+        firstCallLooseExpectation
+          .withBodyExpectation(BodyValueExpectation.equalsJson(expectedBody1))
+          .withQueryParamExpectation(paramExpectation)
+      )
+
+      wireMock.verify(
+        secondCallLooseExpectation
+          .withBodyExpectation(BodyValueExpectation.equalsJson(expectedBody2))
+          .withQueryParamExpectation(paramExpectation)
+      )
+
+    }
+  }
+
+  /**
+    * An auth check could just return a boolean/empty list etc. And auth checks can chain.
+    *
+    * @param path
+    * @param body
+    * @return
+    */
+  def callServer(path: String, body: String): Option[Boolean] = {
+    import sttp.client3._
+    val response = basicRequest
+      .post(uri"${wireMock.baseRequestUrl}/$path?param1=paramValue1")
+      .contentType("application/json") // this is auto-checked by BodyValueExpectation.equalsJson
+      .body(body)
+      .send(sttpBackend)
+
+    if (response.code.code == 200) {
+      Some(true)
+    } else {
+      None
+    }
+  }
+
+}
+```
 
 
 
