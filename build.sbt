@@ -1,6 +1,11 @@
 lazy val baseName = "scala-wiremock-api"
 
-scalaVersion := "2.13.8"
+lazy val scala213 = "2.13.8"
+lazy val scala3 = "3.2.2"
+
+scalaVersion := scala213
+
+crossScalaVersions := List(scala213, scala3)
 
 val circeVersion = "0.14.5"
 val sttpVersion: String = "3.8.11"
@@ -8,7 +13,7 @@ val sttpVersion: String = "3.8.11"
 Test / parallelExecution := false
 
 libraryDependencies ++= List(
-  "com.github.tomakehurst" % "wiremock" % "2.27.2",
+  "com.github.tomakehurst" % "wiremock-jre8" % "2.35.0",
   "ch.qos.logback" % "logback-classic" % "1.4.6",
   "com.typesafe.scala-logging" %% "scala-logging" % "3.9.5",
   "io.circe" %% "circe-core" % circeVersion % Test,
@@ -27,7 +32,7 @@ scalacOptions ++= Seq(
   "-unchecked"
 ) ++
   (CrossVersion.partialVersion(scalaVersion.value) match {
-    case Some((2, _)) => Seq("-Ytasty-reader") // flags only needed in Scala 2
+    case Some((2, 13)) => Seq("-Ytasty-reader") // flags only needed in Scala 2
     case Some((3, _)) => Seq("-no-indent") // flags only needed in Scala 3
     case _ => Seq.empty
   })

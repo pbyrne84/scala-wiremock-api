@@ -12,6 +12,7 @@ import scala.jdk.CollectionConverters.{CollectionHasAsScala, MapHasAsScala}
 
 /**
   * Verify request with duplicate query params https://github.com/wiremock/wiremock/issues/398 is not supported yet
+  * https://github.com/wiremock/wiremock/pull/2110
   */
 class WiremockExpectationSpec extends BaseSpec with TableDrivenPropertyChecks {
   import sttp.client3._

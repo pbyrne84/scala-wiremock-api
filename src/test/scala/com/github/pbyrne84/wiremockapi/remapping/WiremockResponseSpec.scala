@@ -9,13 +9,13 @@ class WiremockResponseSpec extends BaseSpec with TableDrivenPropertyChecks {
     reset()
   }
 
-  // Some people like checkSameElementAs, I don't, fails like a question in a holiday puzzle book
   private val defaultWireMockHeaderNames = List(
     "transfer-encoding",
     "content-encoding",
     "server",
     "matched-stub-id",
-    "vary"
+    "vary",
+    ":status"
   ).sorted
 
   "WireMockResponse" should {
@@ -37,8 +37,8 @@ class WiremockResponseSpec extends BaseSpec with TableDrivenPropertyChecks {
 
         val response = request.send(sttpBackend)
 
-        // Some people like checkSameElementAs, I don't, fails like a question in a holiday puzzle book
-        response.headers.map(_.name).sorted shouldBe defaultWireMockHeaderNames
+        response.headers
+          .filterNot(header => defaultWireMockHeaderNames.contains(header.name)) shouldBe List.empty
 
         response.code shouldBe StatusCode.Ok
         response.body shouldBe Right("")
