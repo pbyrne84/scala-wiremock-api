@@ -15,14 +15,14 @@ PATCH                                                      | DELETE             
 -----------------------------------------------------------------------------------------------------------------------
 ```
 
-Also, it is very useful to have a wiremock instance per api we need to fake. If this is not done things like output
-on nearest match stop making any sense neutering the ability of wiremock to be friendly.
+Also, it is very useful to have a wiremock instance per api we need to fake. If this is not done, then things like output
+ on the nearest match stop making any sense neutering the ability of wiremock to be friendly.
 
 ## Intro
 
 Not the first time I have written this code. Wiremock's use of builders and static imports make 
 the api fairly non-fluid to use. Scala has a lot of nice tricks to make test writing actually
-fun and have an IDE discoverable API (static imports are not fun for this). Intellij has something called
+fun and have an IDE-discoverable API (static imports are not fun for this). Intellij has something called
 smart complete (https://www.jetbrains.com/idea/guide/tips/smart-completion/) which when combined with tight
 signatures can help a lot.
 
@@ -38,7 +38,7 @@ different builders so any work has to be  duplicated which leads to just tight
 verifications being used as software engineers are lazy and adverse to duplicated effort. 
 I include myself in that statement.
 
-Scenario based testing is also held together by strings which makes testing retry operations a
+Scenario based testing is also held together by strings which make testing retry operations a
 tad ugly. This is simply now solved by **WiremockExpectation.applyAsScenario**
 
 **WiremockScenarioExpectationSpec** (<https://github.com/pbyrne84/scala-wiremock-api/blob/main/src/test/scala/com/github/pbyrne84/wiremockapi/remapping/WiremockScenarioExpectationSpec.scala>)
@@ -118,16 +118,16 @@ Is an extension method that uses a **ScenarioInfoGenerator** to auto generate th
 ```
 
 Wiremock scenarios are not thread safe. There is a link in the spec **WiremockScenarioExpectationSpec** to the issue. 
-It also fails in weird ways such as saying the scenario info does not match but in the log output where it is complaining
+It also fails in weird ways, such as saying the scenario info does not match but in the log output where it is complaining
 it looks identical. 
 
-Personally, except for retries I think scenario based stuff is more for automated QA's/Pact testing. Those tests can 
-get overly complicated, fail in horrible ways or worse pass in unforeseen ways. With scala and its type system we should
+Except for retries, I think scenario based stuff is more for automated QA's/Pact testing. Those tests can 
+get overly complicated, fail in horrible ways or worse pass in unforeseen ways. With Scala and its type system, we should
 be able to write code and tests that communicate our intentions in a way we can verify everything is tickety-boo. ADT's
 and Either for errors and tests that fail very close to the errant operation in a way that requires little debugging.
 
-Assumption is what causes problems so having tests that operate close to the operation allows us to test assumptions 
-easily. System level tests are incredibly poor for this as at an implementation level tests start to read like a magical
+Assumption is what causes problems, so having tests that operate close to the operation allows us to test assumptions 
+easily. System level tests are incredibly poor for this as at an implementation level, tests start to read like a magical
 mystery tour as more and more things are added to them. Incoherence and tests are a recipe for not a fun time. Not 
 a fun time is holey software. Not a fun time is not easily being able to tighten up a boundary with a test.
 
@@ -138,8 +138,8 @@ How long does it take you to write the code, how long to do the test to a high s
 developer headache aspects. Tests are fun, they allow communication, exploration of technology and the ability to change 
 tact easily. Implementation sunk cost fallacies suck.
 
-There likely needs to be some Pact testing for things like backwards compatibility checks but if problems are found on 
-that level then work out better practices in the development of the software, work smarter not harder. Working harder
+There likely needs to be some Pact testing for things like backwards compatibility checks, but if problems are found on 
+that level, then better practices in the development of the software are needed, work smarter not harder. Working harder
 also means more tiresome and being tired leads to more mistakes.
 
 ## Mechanism
