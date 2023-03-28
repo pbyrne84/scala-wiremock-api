@@ -3,6 +3,29 @@ lazy val baseName = "scala-wiremock-api"
 lazy val scala213 = "2.13.8"
 lazy val scala3 = "3.2.2"
 
+ThisBuild / sonatypeCredentialHost := "s01.oss.sonatype.org"
+sonatypeRepository := "https://s01.oss.sonatype.org/service/local"
+publishMavenStyle := true
+
+ThisBuild / dynverSonatypeSnapshots := true
+
+inThisBuild(
+  List(
+    organization := "uk.org.devthings",
+    homepage := Some(url("https://github.com/sbt/sbt-ci-release")),
+    // Alternatively License.Apache2 see https://github.com/sbt/librarymanagement/blob/develop/core/src/main/scala/sbt/librarymanagement/License.scala
+    licenses := List("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
+    developers := List(
+      Developer(
+        "pbyrne84",
+        "Patrick Byrne",
+        "pbyrne84@gmail.com",
+        url("https://devthings.org.uk/")
+      )
+    )
+  )
+)
+
 scalaVersion := scala213
 
 name := "scala-wiremock-api"
@@ -18,7 +41,7 @@ val sttpVersion: String = "3.8.11"
 Test / parallelExecution := false
 
 libraryDependencies ++= List(
-  "com.github.tomakehurst" % "wiremock-jre8" % "2.35.0",
+  "com.github.tomakehurst" % "wiremock-jre8" % "2.35.0" % Provided,
   "ch.qos.logback" % "logback-classic" % "1.4.6",
   "com.typesafe.scala-logging" %% "scala-logging" % "3.9.5",
   "io.circe" %% "circe-core" % circeVersion % Test,
