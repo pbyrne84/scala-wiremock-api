@@ -1,7 +1,7 @@
-package com.github.pbyrne84.wiremockapi.remapping
+package uk.org.devthings.scala.wiremockapi.remapping
 
-import com.github.pbyrne84.wiremockapi.BaseSpec
 import io.circe.Json
+import uk.org.devthings.scala.wiremockapi.BaseSpec
 
 class WiremockScenarioExpectationSpec extends BaseSpec {
 
@@ -16,12 +16,12 @@ class WiremockScenarioExpectationSpec extends BaseSpec {
   // into a get request path
   "scenario" should {
     "handle sequential calls to an api so we can mimic things like retrying" in {
-      import WiremockExpectation.ops._
 
       val (expectedJsonResponseBody1, expectation1) = generateAnyExpectation(0)
       val (expectedJsonResponseBody2, expectation2) = generateAnyExpectation(1)
       val (expectedJsonResponseBody3, expectation3) = generateAnyExpectation(2)
 
+      import WiremockExpectation.ops._
       List(
         expectation1,
         expectation2,

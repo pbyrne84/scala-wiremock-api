@@ -1,8 +1,8 @@
-package com.github.pbyrne84.wiremockapi.remapping
+package uk.org.devthings.scala.wiremockapi.remapping
 
-import com.github.pbyrne84.wiremockapi.BaseSpec
 import org.scalatest.prop.TableDrivenPropertyChecks
 import sttp.model.{Header, StatusCode}
+import uk.org.devthings.scala.wiremockapi.BaseSpec
 class WiremockResponseSpec extends BaseSpec with TableDrivenPropertyChecks {
 
   before {

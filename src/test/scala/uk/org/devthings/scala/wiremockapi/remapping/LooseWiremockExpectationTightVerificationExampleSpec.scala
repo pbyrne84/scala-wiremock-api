@@ -1,7 +1,7 @@
-package com.github.pbyrne84.wiremockapi.remapping
+package uk.org.devthings.scala.wiremockapi.remapping
 
-import com.github.pbyrne84.wiremockapi.BaseSpec
-import com.github.pbyrne84.wiremockapi.remapping.RequestMethod.Post
+import uk.org.devthings.scala.wiremockapi.BaseSpec
+import uk.org.devthings.scala.wiremockapi.remapping.RequestMethod.Post
 
 class LooseWiremockExpectationTightVerificationExampleSpec extends BaseSpec {
 
@@ -49,7 +49,7 @@ class LooseWiremockExpectationTightVerificationExampleSpec extends BaseSpec {
       // A None can ne cause by either call failing
       result shouldBe Some(true)
 
-      import WireMockValueExpectation.ops._
+      import uk.org.devthings.scala.wiremockapi.remapping.WireMockValueExpectation.ops._
 
       val paramExpectation = ("param1" -> "paramValue1").asEqualTo
 

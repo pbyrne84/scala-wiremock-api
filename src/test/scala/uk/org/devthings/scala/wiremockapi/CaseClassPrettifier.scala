@@ -1,4 +1,4 @@
-package com.github.pbyrne84.wiremockapi
+package uk.org.devthings.scala.wiremockapi
 
 import scala.annotation.tailrec
 import scala.collection.mutable
