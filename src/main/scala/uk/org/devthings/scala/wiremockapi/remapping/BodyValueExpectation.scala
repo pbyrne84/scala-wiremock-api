@@ -1,4 +1,4 @@
-package com.github.pbyrne84.wiremockapi.remapping
+package uk.org.devthings.scala.wiremockapi.remapping
 
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.matching._

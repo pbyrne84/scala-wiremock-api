@@ -1,4 +1,4 @@
-package com.github.pbyrne84.wiremockapi.remapping
+package uk.org.devthings.scala.wiremockapi.remapping
 
 import java.net.URI
 //Taken from https://developer.mozilla.org/en-US/docs/Web/HTTP/Redirections

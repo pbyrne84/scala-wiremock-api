@@ -5,6 +5,11 @@ lazy val scala3 = "3.2.2"
 
 scalaVersion := scala213
 
+name := "scala-wiremock-api"
+organization := "uk.org.devthings"
+organizationHomepage := Some(url("https://scala.devthings.org.uk"))
+description := "Scala adaptors for wiremock to make things a bit nicer"
+
 crossScalaVersions := List(scala213, scala3)
 
 val circeVersion = "0.14.5"

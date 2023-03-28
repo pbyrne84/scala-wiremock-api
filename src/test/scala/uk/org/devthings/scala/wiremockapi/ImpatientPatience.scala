@@ -1,4 +1,4 @@
-package com.github.pbyrne84.wiremockapi
+package uk.org.devthings.scala.wiremockapi
 
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{Microsecond, Second, Span}

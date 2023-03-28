@@ -1,9 +1,9 @@
-package com.github.pbyrne84.wiremockapi
+package uk.org.devthings.scala.wiremockapi
 
-import com.github.pbyrne84.wiremockapi.remapping.WiremockExpectation
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.{MappingBuilder, ResponseDefinitionBuilder, WireMock}
 import com.github.tomakehurst.wiremock.matching.UrlPattern
+import uk.org.devthings.scala.wiremockapi.remapping.WiremockExpectation
 
 import java.net.ServerSocket
 import scala.util.{Failure, Success, Using}

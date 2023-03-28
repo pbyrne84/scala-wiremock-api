@@ -1,5 +1,5 @@
-package com.github.pbyrne84.wiremockapi
-import com.github.pbyrne84.wiremockapi.remapping.WiremockExpectation
+package uk.org.devthings.scala.wiremockapi
+
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder
 import io.circe.{Json, ParsingFailure}
@@ -10,6 +10,7 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import sttp.client3.{HttpClientSyncBackend, Identity, SttpBackend}
 import sttp.model.Header
+import uk.org.devthings.scala.wiremockapi.remapping.WiremockExpectation
 
 abstract class BaseSpec extends AnyWordSpec with ScalaFutures with ImpatientPatience with Matchers with BeforeAndAfter {
 

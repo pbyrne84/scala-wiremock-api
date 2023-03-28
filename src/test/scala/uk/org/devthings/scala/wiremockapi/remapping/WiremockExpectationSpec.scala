@@ -1,11 +1,11 @@
-package com.github.pbyrne84.wiremockapi.remapping
+package uk.org.devthings.scala.wiremockapi.remapping
 
-import com.github.pbyrne84.wiremockapi.BaseSpec
 import com.github.tomakehurst.wiremock.client.{MappingBuilder, WireMock}
 import com.github.tomakehurst.wiremock.matching._
 import org.scalactic.anyvals.NonEmptyList
 import org.scalatest.prop.TableDrivenPropertyChecks
 import sttp.model.Uri
+import uk.org.devthings.scala.wiremockapi.BaseSpec
 
 import java.util
 import scala.jdk.CollectionConverters.{CollectionHasAsScala, MapHasAsScala}
@@ -17,6 +17,10 @@ import scala.jdk.CollectionConverters.{CollectionHasAsScala, MapHasAsScala}
 class WiremockExpectationSpec extends BaseSpec with TableDrivenPropertyChecks {
   import sttp.client3._
 
+  // Extension methods for tuples to expectation, a bit more finger friendly.
+  import uk.org.devthings.scala.wiremockapi.remapping.BodyValueExpectation.ops._
+  import uk.org.devthings.scala.wiremockapi.remapping.WireMockValueExpectation.ops._
+
   private val methodRequestMappings = List(
     (RequestMethod.Any, basicRequest.get _),
     (RequestMethod.Get, basicRequest.get _),
@@ -25,9 +29,6 @@ class WiremockExpectationSpec extends BaseSpec with TableDrivenPropertyChecks {
     (RequestMethod.Delete, basicRequest.delete _),
     (RequestMethod.Patch, basicRequest.patch _)
   )
-  // Extension methods for tuples to expectation, a bit more finger friendly.
-
-  import WireMockValueExpectation.ops._
 
   private val allOperations = List(
     ("name1", "value1").asEqualTo,
@@ -232,7 +233,6 @@ class WiremockExpectationSpec extends BaseSpec with TableDrivenPropertyChecks {
     }
 
     "map body to their wiremock equivalent auto adding content type headers where applicable by default" in {
-      import BodyValueExpectation.ops._
 
       val mappings = Table(
         ("desc", "content type header", "expectation"),
@@ -286,7 +286,6 @@ class WiremockExpectationSpec extends BaseSpec with TableDrivenPropertyChecks {
     }
 
     "allow multiple body expectations" in {
-      import BodyValueExpectation.ops._
 
       val expectations = NonEmptyList(
         "body-equals".asBodyEquals,
