@@ -1,0 +1,32 @@
+name: CI - Pull request
+on:  [pull_request]
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout current branch (full)
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: Download Java and enable coursier
+        uses: coursier/setup-action@v1
+        with:
+          jvm: adopt@1.11
+
+      - name: Validate scala2.13
+        run: | #+test seems to run a bit kooky missing things
+          echo "Running tests under scala2.13"
+          sbt "++ 2.13;test"
+
+      - name: Validate scala3
+        run: |
+          set -e
+          echo "Running tests under scala3"
+          sbt "++ 3;test"
+          

@@ -41,7 +41,7 @@ I include myself in that statement.
 Scenario based testing is also held together by strings which make testing retry operations a
 tad ugly. This is simply now solved by **WiremockExpectation.applyAsScenario**
 
-**WiremockScenarioExpectationSpec** (<https://github.com/pbyrne84/scala-wiremock-api/blob/main/src/test/scala/com/github/pbyrne84/wiremockapi/remapping/WiremockScenarioExpectationSpec.scala>)
+**WiremockScenarioExpectationSpec** (<https://github.com/pbyrne84/scala-wiremock-api/blob/main/src/test/scala/uk/org/devthings/scala/wiremockapi/remapping/WiremockScenarioExpectationSpec.scala>)
 ```scala
 "scenario" should {
   "handle sequential calls to an api so we can mimic things like retrying" in {
@@ -170,7 +170,7 @@ case class JsonResponseBody(value: String) extends ResponseBody {
 ```
 
 ### Example LooseWiremockExpectationTightVerificationExampleSpec
-<https://github.com/pbyrne84/scala-wiremock-api/blob/main/src/test/scala/com/github/pbyrne84/wiremockapi/remapping/LooseWiremockExpectationTightVerificationExampleSpec.scala>
+<https://github.com/pbyrne84/scala-wiremock-api/blob/main/src/test/scala/uk/org/devthings/scala/wiremockapi/remapping/LooseWiremockExpectationTightVerificationExampleSpec.scala>
 
 ```scala
 class LooseWiremockExpectationTightVerificationExampleSpec extends BaseSpec {
