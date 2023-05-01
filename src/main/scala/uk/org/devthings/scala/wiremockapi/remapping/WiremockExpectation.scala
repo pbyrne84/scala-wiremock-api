@@ -5,6 +5,7 @@ import com.github.tomakehurst.wiremock.client.{MappingBuilder, WireMock}
 import com.github.tomakehurst.wiremock.matching.{MultipartValuePattern, RequestPatternBuilder, StringValuePattern}
 
 object WiremockExpectation {
+
   val default: WiremockExpectation = WiremockExpectation()
 
   def applyAsScenario(
@@ -25,7 +26,7 @@ object WiremockExpectation {
     }
   }
 
-  object ops {
+  object ops extends UrlExpectationOps with BodyValueExpectationOps with WireMockValueExpectationOps {
     implicit class WiremockExpectationsOps(expectations: List[WiremockExpectation]) {
 
       def applyAsScenario(
@@ -35,24 +36,9 @@ object WiremockExpectation {
         WiremockExpectation.applyAsScenario(expectations, server, scenarioInfoGenerator)
       }
     }
+
   }
 
-//  stubFor(
-//    any(urlPathEqualTo("/everything"))
-//      .withHeader("Accept", containing("xml"))
-//      .withCookie("session", matching(".*12345.*"))
-//      .withQueryParam("search_term", equalTo("WireMock"))
-//      .withBasicAuth("jeff@example.com", "jeffteenjefftyjeff")
-//      .withRequestBody(equalToXml("<search-results />"))
-//      .withRequestBody(matchingXPath("//search-results"))
-//      .withMultipartRequestBody(
-//        aMultipart()
-//          .withName("info")
-//          .withHeader("Content-Type", containing("charset"))
-//          .withBody(equalToJson("{}"))
-//      )
-//      .willReturn(aResponse())
-//  );
 }
 
 case class ScenarioInfo(scenarioName: String, expectedCurrentState: String, nextState: String)
@@ -75,28 +61,31 @@ case class WiremockExpectation(
   def setScenarioInfo(scenarioInfo: ScenarioInfo): WiremockExpectation =
     copy(maybeScenarioInfo = Some(scenarioInfo))
 
-  def setUrlExpectation(urlExpectation: UrlExpectation): WiremockExpectation =
+  def setUrl(urlExpectation: UrlExpectation): WiremockExpectation =
     copy(urlExpectation = urlExpectation)
 
-  def withHeaderExpectation(headerExpectation: NameValueExpectation): WiremockExpectation =
+  def withHeader(headerExpectation: NameValueExpectation): WiremockExpectation =
     copy(headerExpectations = headerExpectations :+ headerExpectation)
 
-  def withHeaderExpectations(headerExpectations: Seq[NameValueExpectation]): WiremockExpectation =
+  def withHeaders(headerExpectations: NameValueExpectation*): WiremockExpectation =
     copy(headerExpectations = headerExpectations ++ headerExpectations)
 
-  def withCookieExpectation(cookieExpectation: NameValueExpectation): WiremockExpectation =
+  def withCookie(cookieExpectation: NameValueExpectation): WiremockExpectation =
     copy(cookieExpectations = cookieExpectations :+ cookieExpectation)
 
-  def withQueryParamExpectation(queryParamExpectation: NameValueExpectation): WiremockExpectation =
+  def withQueryParam(queryParamExpectation: NameValueExpectation): WiremockExpectation =
     copy(queryParamExpectations = queryParamExpectations :+ queryParamExpectation)
 
-  def withBodyExpectation(bodyExpectation: BodyValueExpectation): WiremockExpectation =
+  def withQueryParams(queryParamExpectations: NameValueExpectation*): WiremockExpectation =
+    copy(queryParamExpectations = queryParamExpectations :++ queryParamExpectations)
+
+  def withBody(bodyExpectation: BodyValueExpectation): WiremockExpectation =
     copy(bodyExpectations = bodyExpectations :+ bodyExpectation)
 
-  def withBodyExpectations(additionalBodyExpectations: Seq[BodyValueExpectation]): WiremockExpectation =
+  def withBodies(additionalBodyExpectations: BodyValueExpectation*): WiremockExpectation =
     copy(bodyExpectations = bodyExpectations ++ additionalBodyExpectations)
 
-  def withMultiPartRequestBodyExpectation(bodyExpectation: WiremockMultiPartRequestBodyExpectation) =
+  def withMultiPartRequest(bodyExpectation: WiremockMultiPartRequestBodyExpectation) =
     copy(multiPartExpectations = multiPartExpectations :+ bodyExpectation)
 
   def withResponse(wiremockResponse: WiremockResponse): WiremockExpectation =

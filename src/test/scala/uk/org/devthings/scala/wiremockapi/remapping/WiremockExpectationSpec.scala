@@ -16,10 +16,9 @@ import scala.jdk.CollectionConverters.{CollectionHasAsScala, MapHasAsScala}
   */
 class WiremockExpectationSpec extends BaseSpec with TableDrivenPropertyChecks {
   import sttp.client3._
-
   // Extension methods for tuples to expectation, a bit more finger friendly.
-  import uk.org.devthings.scala.wiremockapi.remapping.BodyValueExpectation.ops._
-  import uk.org.devthings.scala.wiremockapi.remapping.WireMockValueExpectation.ops._
+
+  import WiremockExpectation.ops._
 
   private val methodRequestMappings = List(
     (RequestMethod.Any, basicRequest.get _),
@@ -145,7 +144,7 @@ class WiremockExpectationSpec extends BaseSpec with TableDrivenPropertyChecks {
     "map headers to their wiremock equivalent" in {
       val expectation = allOperations.foldLeft(WiremockExpectation.default) {
         case (expectation: WiremockExpectation, valueExpectation: NameValueExpectation) =>
-          expectation.withHeaderExpectation(valueExpectation)
+          expectation.withHeader(valueExpectation)
       }
 
       val setupExpectationHeaders: Map[String, StringValuePattern] = getMultiValuePatternMapFromExpectation(
@@ -180,7 +179,7 @@ class WiremockExpectationSpec extends BaseSpec with TableDrivenPropertyChecks {
       val expectation = allOperations
         .foldLeft(WiremockExpectation.default) {
           case (expectation: WiremockExpectation, valueExpectation: NameValueExpectation) =>
-            expectation.withQueryParamExpectation(valueExpectation)
+            expectation.withQueryParam(valueExpectation)
         }
 
       val setupExpectationParameters: Map[String, StringValuePattern] = getMultiValuePatternMapFromExpectation(
@@ -201,7 +200,7 @@ class WiremockExpectationSpec extends BaseSpec with TableDrivenPropertyChecks {
       val expectation = allOperations
         .foldLeft(WiremockExpectation.default) {
           case (expectation: WiremockExpectation, valueExpectation: NameValueExpectation) =>
-            expectation.withCookieExpectation(valueExpectation)
+            expectation.withCookie(valueExpectation)
         }
 
       val setupExpectationParameters: Map[String, StringValuePattern] = getStringValuePatternMapFromExpectation(
@@ -252,7 +251,7 @@ class WiremockExpectationSpec extends BaseSpec with TableDrivenPropertyChecks {
 
       forAll(mappings) { (_, maybeContentType, bodyValueExpectation) =>
         val expectationWithBody = WiremockExpectation.default
-          .withBodyExpectation(bodyValueExpectation)
+          .withBody(bodyValueExpectation)
 
         val builtWiremockExpectation = expectationWithBody.asExpectationBuilder
           .build()
@@ -287,15 +286,15 @@ class WiremockExpectationSpec extends BaseSpec with TableDrivenPropertyChecks {
 
     "allow multiple body expectations" in {
 
-      val expectations = NonEmptyList(
+      val expectations: NonEmptyList[BodyValueExpectation] = NonEmptyList(
         "body-equals".asBodyEquals,
         "body-matches".asBodyMatches,
         "body-containing".asBodyContains
       )
 
       val expectation = WiremockExpectation.default
-        .withBodyExpectation(expectations.head)
-        .withBodyExpectations(expectations.tail)
+        .withBody(expectations.head)
+        .withBodies(expectations.tail: _*)
 
       implicit class BodyPatternOps(patterns: java.util.List[ContentPattern[_]]) {
         def asSortedScalaList: List[ContentPattern[_]] = patterns.asScala.toList.sortBy(_.toString)
