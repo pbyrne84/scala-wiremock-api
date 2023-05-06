@@ -31,14 +31,14 @@ class LooseWiremockExpectationTightVerificationExampleSpec extends BaseSpec {
       // as people can use the string expectation instead of the json expectation meaning the expectation is not
       // json formatting safe.
       val firstCallLooseExpectation =
-        WiremockExpectation.statusOk
-          .setMethod(Post) // we could skip the method here and add it later but method is pretty hard to fail on
-          .setUrl("/api-path-1".asUrlPathEquals)
+        WiremockExpectation.willRespondOk
+          .expectsMethod(Post) // we could skip the method here and add it later but method is pretty hard to fail on
+          .expectsUrl("/api-path-1".asUrlPathEquals)
 
       val secondCallLooseExpectation =
-        WiremockExpectation.statusOk
-          .setMethod(Post) // we could skip the method here and add it later but method is pretty hard to fail on
-          .setUrl("/api-path-2".asUrlPathEquals)
+        WiremockExpectation.willRespondOk
+          .expectsMethod(Post) // we could skip the method here and add it later but method is pretty hard to fail on
+          .expectsUrl("/api-path-2".asUrlPathEquals)
 
       wireMock.stubExpectation(firstCallLooseExpectation)
       wireMock.stubExpectation(secondCallLooseExpectation)
@@ -57,14 +57,14 @@ class LooseWiremockExpectationTightVerificationExampleSpec extends BaseSpec {
 
       wireMock.verify(
         firstCallLooseExpectation
-          .withBody(BodyValueExpectation.equalsJson(expectedBody1))
-          .withQueryParam(paramExpectation)
+          .expectsBody(BodyValueExpectation.equalsJson(expectedBody1))
+          .expectsQueryParam(paramExpectation)
       )
 
       wireMock.verify(
         secondCallLooseExpectation
-          .withBody(BodyValueExpectation.equalsJson(expectedBody2))
-          .withQueryParam(paramExpectation)
+          .expectsBody(BodyValueExpectation.equalsJson(expectedBody2))
+          .expectsQueryParam(paramExpectation)
       )
 
     }
