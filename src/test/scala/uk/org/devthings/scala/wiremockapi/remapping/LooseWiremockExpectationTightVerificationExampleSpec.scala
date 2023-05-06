@@ -11,6 +11,8 @@ class LooseWiremockExpectationTightVerificationExampleSpec extends BaseSpec {
 
   // Simple example where 404's could lead to confusion.
   "Using a loose expectation and tight verification" should {
+    import WiremockExpectation.ops._
+
     "create a test we can be sure is correct easily" in {
 
       // language=json
@@ -31,12 +33,12 @@ class LooseWiremockExpectationTightVerificationExampleSpec extends BaseSpec {
       val firstCallLooseExpectation =
         WiremockExpectation.default
           .setMethod(Post) // we could skip the method here and add it later but method is pretty hard to fail on
-          .setUrl(UrlExpectation.equalsPath("/api-path-1"))
+          .setUrl("/api-path-1".asUrlPathEquals)
 
       val secondCallLooseExpectation =
         WiremockExpectation.default
           .setMethod(Post) // we could skip the method here and add it later but method is pretty hard to fail on
-          .setUrl(UrlExpectation.equalsPath("/api-path-2"))
+          .setUrl("/api-path-2".asUrlPathEquals)
 
       wireMock.stubExpectation(firstCallLooseExpectation)
       wireMock.stubExpectation(secondCallLooseExpectation)
