@@ -6,13 +6,13 @@ import com.github.tomakehurst.wiremock.matching
 private[wiremockapi] trait UrlExpectationOps {
 
   implicit class UrlStringMatcherOps(string: String) {
-    def asUrlEquals: UrlExpectation = UrlEquals(string)
+    def asUrlEquals: UrlExpectation = UrlExpectation.equalsAll(string)
 
-    def asUrlPathEquals: UrlExpectation = UrlPathEquals(string)
+    def asUrlPathEquals: UrlExpectation = UrlExpectation.equalsPath(string)
 
-    def asUrlMatching: UrlExpectation = UrlMatching(string)
+    def asUrlMatching: UrlExpectation = UrlExpectation.matchesAll(string)
 
-    def asUrlPathMatching: UrlExpectation = UrlPatchMatching(string)
+    def asUrlPathMatching: UrlExpectation = UrlExpectation.matchesPath(string)
   }
 
 }
@@ -20,13 +20,13 @@ private[wiremockapi] trait UrlExpectationOps {
 object UrlExpectation extends UrlExpectationOps {
   val anyUrlMatcher: UrlMatching = UrlMatching(".*")
 
-  def matchesAll(value: String): UrlExpectation = value.asUrlMatching
+  def matchesAll(value: String): UrlExpectation = UrlMatching(value)
 
-  def equalsAll(value: String): UrlExpectation = value.asUrlEquals
+  def equalsAll(value: String): UrlExpectation = UrlEquals(value)
 
-  def matchesPath(value: String): UrlExpectation = value.asUrlPathMatching
+  def matchesPath(value: String): UrlExpectation = UrlPatchMatching(value)
 
-  def equalsPath(value: String): UrlExpectation = value.asUrlPathEquals
+  def equalsPath(value: String): UrlExpectation = UrlPathEquals(value)
 
 }
 
