@@ -2,20 +2,6 @@ package uk.org.devthings.scala.wiremockapi.remapping
 
 import com.github.tomakehurst.wiremock.client.{ResponseDefinitionBuilder, WireMock}
 
-object ResponseBody {
-  def jsonBody(json: String): JsonResponseBody = JsonResponseBody(json)
-  def binaryBody(value: List[Byte]): BinaryResponseBody = BinaryResponseBody(value)
-  def stringBody(string: String): StringResponseBody = StringResponseBody(string)
-}
-
-sealed abstract class ResponseBody
-case object EmptyResponseBody extends ResponseBody
-case class BinaryResponseBody(value: List[Byte]) extends ResponseBody
-case class StringResponseBody(value: String) extends ResponseBody
-case class JsonResponseBody(value: String) extends ResponseBody {
-  val jsonHeader: (String, String) = "content-type" -> "application/json"
-}
-
 object WiremockResponse {
 
   val emptySuccess: WiremockResponse = WiremockResponse()

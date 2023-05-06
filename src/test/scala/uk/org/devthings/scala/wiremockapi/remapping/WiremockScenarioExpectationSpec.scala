@@ -15,13 +15,14 @@ class WiremockScenarioExpectationSpec extends BaseSpec {
   // So I cannot really test what I want, 2 parallel identical calls returning different results concatenated
   // into a get request path
   "scenario" should {
+    import WiremockExpectation.ops._
+
     "handle sequential calls to an api so we can mimic things like retrying" in {
 
       val (expectedJsonResponseBody1, expectation1) = generateAnyExpectation(0)
       val (expectedJsonResponseBody2, expectation2) = generateAnyExpectation(1)
       val (expectedJsonResponseBody3, expectation3) = generateAnyExpectation(2)
 
-      import WiremockExpectation.ops._
       List(
         expectation1,
         expectation2,
@@ -55,7 +56,7 @@ class WiremockScenarioExpectationSpec extends BaseSpec {
         .withResponse(
           WiremockResponse.emptySuccess
             .withStatus(200 + index)
-            .withResponseBody(ResponseBody.jsonBody(jsonResponseBody.spaces2))
+            .withResponseBody(jsonResponseBody.spaces2.asJsonResponse)
         )
     }
   }

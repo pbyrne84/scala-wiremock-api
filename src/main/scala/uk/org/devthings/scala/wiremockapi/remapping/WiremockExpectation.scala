@@ -26,9 +26,13 @@ object WiremockExpectation {
     }
   }
 
-  object ops extends UrlExpectationOps with BodyValueExpectationOps with WireMockValueExpectationOps {
-    implicit class WiremockExpectationsOps(expectations: List[WiremockExpectation]) {
+  object ops
+      extends UrlExpectationOps
+      with BodyValueExpectationOps
+      with WireMockValueExpectationOps
+      with ResponseBodyOps {
 
+    implicit class WiremockExpectationsOps(expectations: List[WiremockExpectation]) {
       def applyAsScenario(
           server: WireMockServer,
           scenarioInfoGenerator: ScenarioInfoGenerator = ScenarioInfoGenerator.default
@@ -36,9 +40,7 @@ object WiremockExpectation {
         WiremockExpectation.applyAsScenario(expectations, server, scenarioInfoGenerator)
       }
     }
-
   }
-
 }
 
 case class ScenarioInfo(scenarioName: String, expectedCurrentState: String, nextState: String)
