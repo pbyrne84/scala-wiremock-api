@@ -31,12 +31,12 @@ class LooseWiremockExpectationTightVerificationExampleSpec extends BaseSpec {
       // as people can use the string expectation instead of the json expectation meaning the expectation is not
       // json formatting safe.
       val firstCallLooseExpectation =
-        WiremockExpectation.default
+        WiremockExpectation.statusOk
           .setMethod(Post) // we could skip the method here and add it later but method is pretty hard to fail on
           .setUrl("/api-path-1".asUrlPathEquals)
 
       val secondCallLooseExpectation =
-        WiremockExpectation.default
+        WiremockExpectation.statusOk
           .setMethod(Post) // we could skip the method here and add it later but method is pretty hard to fail on
           .setUrl("/api-path-2".asUrlPathEquals)
 
