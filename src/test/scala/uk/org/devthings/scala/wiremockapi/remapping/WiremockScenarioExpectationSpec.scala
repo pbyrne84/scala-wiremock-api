@@ -54,7 +54,7 @@ class WiremockScenarioExpectationSpec extends BaseSpec {
           |}
           |""".stripMargin)
 
-      jsonResponseBody -> WiremockExpectation.default
+      jsonResponseBody -> WiremockExpectation.statusOk
         .withResponse(
           WiremockResponse.statusOk
             .withStatus(200 + index)

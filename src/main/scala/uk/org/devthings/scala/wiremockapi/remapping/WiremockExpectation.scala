@@ -6,7 +6,7 @@ import com.github.tomakehurst.wiremock.matching.{MultipartValuePattern, RequestP
 
 object WiremockExpectation {
 
-  val default: WiremockExpectation = WiremockExpectation()
+  val statusOk: WiremockExpectation = WiremockExpectation()
 
   def applyAsScenario(
       expectations: List[WiremockExpectation],
@@ -87,8 +87,20 @@ case class WiremockExpectation(
   def withBodies(additionalBodyExpectations: BodyValueExpectation*): WiremockExpectation =
     copy(bodyExpectations = bodyExpectations ++ additionalBodyExpectations)
 
-  def withMultiPartRequest(bodyExpectation: WiremockMultiPartRequestBodyExpectation) =
+  def withMultiPartRequest(bodyExpectation: WiremockMultiPartRequestBodyExpectation): WiremockExpectation =
     copy(multiPartExpectations = multiPartExpectations :+ bodyExpectation)
+
+  def returningStatus(status: Int): WiremockExpectation = {
+    copy(response = response.withStatus(status))
+  }
+
+  def returningBody(responseBody: ResponseBody): WiremockExpectation = {
+    copy(response = response.withResponseBody(responseBody))
+  }
+
+  def returningHeader(name: String, values: String*): WiremockExpectation = {
+    copy(response = response.withHeader(name, values: _*))
+  }
 
   def withResponse(wiremockResponse: WiremockResponse): WiremockExpectation =
     copy(response = wiremockResponse)
