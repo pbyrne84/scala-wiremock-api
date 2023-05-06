@@ -23,6 +23,8 @@ class WiremockScenarioExpectationSpec extends BaseSpec {
       val (expectedJsonResponseBody2, expectation2) = generateAnyExpectation(1)
       val (expectedJsonResponseBody3, expectation3) = generateAnyExpectation(2)
 
+      val equals1: UrlExpectation = "/select".asUrlPathEquals
+
       List(
         expectation1,
         expectation2,
@@ -54,7 +56,7 @@ class WiremockScenarioExpectationSpec extends BaseSpec {
 
       jsonResponseBody -> WiremockExpectation.default
         .withResponse(
-          WiremockResponse.emptySuccess
+          WiremockResponse.statusOk
             .withStatus(200 + index)
             .withResponseBody(jsonResponseBody.spaces2.asJsonResponse)
         )
