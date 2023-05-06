@@ -23,7 +23,7 @@ class WiremockResponseSpec extends BaseSpec with TableDrivenPropertyChecks {
 
     "return a 200 with empty body for a default constructor" in {
       val defaultConstructor = WiremockResponse()
-      val emptySuccess = WiremockResponse.emptySuccess
+      val emptySuccess = WiremockResponse.statusOk
 
       val options = Table(
         ("type", "value"),

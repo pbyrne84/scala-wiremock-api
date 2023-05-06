@@ -4,7 +4,9 @@ import com.github.tomakehurst.wiremock.client.{ResponseDefinitionBuilder, WireMo
 
 object WiremockResponse {
 
-  val emptySuccess: WiremockResponse = WiremockResponse()
+  val statusOk: WiremockResponse = WiremockResponse()
+  val statusNotFound: WiremockResponse = WiremockResponse(status = 404)
+  val statusServerError: WiremockResponse = WiremockResponse(status = 500)
 
   // Utility just to make the choice easier hiding the magic number element
   def redirectResponse(redirectHeader: RedirectHeader): WiremockResponse = {

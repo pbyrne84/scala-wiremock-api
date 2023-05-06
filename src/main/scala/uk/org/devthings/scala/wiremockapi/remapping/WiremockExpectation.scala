@@ -53,7 +53,7 @@ case class WiremockExpectation(
     queryParamExpectations: Seq[NameValueExpectation] = List.empty,
     bodyExpectations: Seq[BodyValueExpectation] = List.empty,
     multiPartExpectations: Seq[WiremockMultiPartRequestBodyExpectation] = List.empty,
-    response: WiremockResponse = WiremockResponse.emptySuccess,
+    response: WiremockResponse = WiremockResponse.statusOk,
     maybeScenarioInfo: Option[ScenarioInfo] = None
 ) {
 
