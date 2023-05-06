@@ -1,5 +1,11 @@
 # scala-wiremock-api
 
+## Usage
+"uk.org.devthings" %% "scala-wiremock-api" % "0.1.0"
+
+
+## Wiremock logging tip
+
 Note when using wiremock is very handy to have a plain logger setup for the test so wiremock's output is readable.
 
 e.g.

@@ -40,6 +40,11 @@ val sttpVersion: String = "3.8.11"
 
 Test / parallelExecution := false
 
+/**
+  * <dependency> <groupId>uk.org.devthings</groupId> <artifactId>scala-wiremock-api_2.13</artifactId>
+  * <version>0.1.0</version> </dependency>
+  */
+
 libraryDependencies ++= List(
   "com.github.tomakehurst" % "wiremock-jre8" % "2.35.0" % Provided,
   "ch.qos.logback" % "logback-classic" % "1.4.6",
