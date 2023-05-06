@@ -1,6 +1,6 @@
 lazy val baseName = "scala-wiremock-api"
 
-lazy val scala213 = "2.13.8"
+lazy val scala213 = "2.13.10"
 lazy val scala3 = "3.2.2"
 
 ThisBuild / sonatypeCredentialHost := "s01.oss.sonatype.org"
