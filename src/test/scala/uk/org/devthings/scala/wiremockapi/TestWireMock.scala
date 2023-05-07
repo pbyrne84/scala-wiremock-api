@@ -3,7 +3,7 @@ package uk.org.devthings.scala.wiremockapi
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.{MappingBuilder, ResponseDefinitionBuilder, WireMock}
 import com.github.tomakehurst.wiremock.matching.UrlPattern
-import uk.org.devthings.scala.wiremockapi.remapping.WiremockExpectation
+import uk.org.devthings.scala.wiremockapi.remapping.WireMockExpectation
 
 import java.net.ServerSocket
 import scala.util.{Failure, Success, Using}
@@ -51,12 +51,12 @@ class TestWireMock(val port: Int) {
     wireMockServer.stubFor(mappingBuilder)
   }
 
-  def stubExpectation(wiremockExpectation: WiremockExpectation): Unit = {
-    stubFor(wiremockExpectation.asExpectationBuilder)
+  def stubExpectation(wireMockExpectation: WireMockExpectation): Unit = {
+    stubFor(wireMockExpectation.asExpectationBuilder)
   }
 
-  def verify(wiremockExpectation: WiremockExpectation): Unit = {
-    wireMockServer.verify(wiremockExpectation.asVerificationBuilder)
+  def verify(wireMockExpectation: WireMockExpectation): Unit = {
+    wireMockServer.verify(wireMockExpectation.asVerificationBuilder)
   }
 
 }

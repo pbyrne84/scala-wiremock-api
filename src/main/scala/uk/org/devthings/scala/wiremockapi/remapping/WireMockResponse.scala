@@ -2,33 +2,33 @@ package uk.org.devthings.scala.wiremockapi.remapping
 
 import com.github.tomakehurst.wiremock.client.{ResponseDefinitionBuilder, WireMock}
 
-object WiremockResponse {
+object WireMockResponse {
 
-  val statusOk: WiremockResponse = WiremockResponse()
-  val statusNotFound: WiremockResponse = WiremockResponse(status = 404)
-  val statusServerError: WiremockResponse = WiremockResponse(status = 500)
+  val statusOk: WireMockResponse = WireMockResponse()
+  val statusNotFound: WireMockResponse = WireMockResponse(status = 404)
+  val statusServerError: WireMockResponse = WireMockResponse(status = 500)
 
   // Utility just to make the choice easier hiding the magic number element
-  def redirectResponse(redirectHeader: RedirectHeader): WiremockResponse = {
-    WiremockResponse(status = redirectHeader.status)
+  def redirectResponse(redirectHeader: RedirectHeader): WireMockResponse = {
+    WireMockResponse(status = redirectHeader.status)
       .withHeader("location", redirectHeader.uri.toString)
   }
 
 }
 
-case class WiremockResponse(
+case class WireMockResponse(
     status: Int = 200,
     headers: List[(String, List[String])] = List.empty,
     responseBody: ResponseBody = EmptyResponseBody
 ) {
 
-  def withStatus(status: Int): WiremockResponse =
+  def withStatus(status: Int): WireMockResponse =
     copy(status = status)
 
-  def withHeader(name: String, values: String*): WiremockResponse =
+  def withHeader(name: String, values: String*): WireMockResponse =
     copy(headers = headers :+ (name -> values.toList))
 
-  def withResponseBody(responseBody: ResponseBody): WiremockResponse =
+  def withResponseBody(responseBody: ResponseBody): WireMockResponse =
     copy(responseBody = responseBody)
 
   def asWireMock: ResponseDefinitionBuilder = {

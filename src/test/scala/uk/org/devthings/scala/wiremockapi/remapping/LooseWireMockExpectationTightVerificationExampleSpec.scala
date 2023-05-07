@@ -3,7 +3,7 @@ package uk.org.devthings.scala.wiremockapi.remapping
 import uk.org.devthings.scala.wiremockapi.BaseSpec
 import uk.org.devthings.scala.wiremockapi.remapping.RequestMethod.Post
 
-class LooseWiremockExpectationTightVerificationExampleSpec extends BaseSpec {
+class LooseWireMockExpectationTightVerificationExampleSpec extends BaseSpec {
 
   before {
     reset()
@@ -11,7 +11,7 @@ class LooseWiremockExpectationTightVerificationExampleSpec extends BaseSpec {
 
   // Simple example where 404's could lead to confusion.
   "Using a loose expectation and tight verification" should {
-    import WiremockExpectation.ops._
+    import WireMockExpectation.ops._
 
     "create a test we can be sure is correct easily" in {
 
@@ -31,12 +31,12 @@ class LooseWiremockExpectationTightVerificationExampleSpec extends BaseSpec {
       // as people can use the string expectation instead of the json expectation meaning the expectation is not
       // json formatting safe.
       val firstCallLooseExpectation =
-        WiremockExpectation.willRespondOk
+        WireMockExpectation.willRespondOk
           .expectsMethod(Post) // we could skip the method here and add it later but method is pretty hard to fail on
           .expectsUrl("/api-path-1".asUrlPathEquals)
 
       val secondCallLooseExpectation =
-        WiremockExpectation.willRespondOk
+        WireMockExpectation.willRespondOk
           .expectsMethod(Post) // we could skip the method here and add it later but method is pretty hard to fail on
           .expectsUrl("/api-path-2".asUrlPathEquals)
 
@@ -51,7 +51,7 @@ class LooseWiremockExpectationTightVerificationExampleSpec extends BaseSpec {
       // A None can ne cause by either call failing
       result shouldBe Some(true)
 
-      import uk.org.devthings.scala.wiremockapi.remapping.WiremockExpectation.ops._
+      import uk.org.devthings.scala.wiremockapi.remapping.WireMockExpectation.ops._
 
       val paramExpectation = ("param1" -> "paramValue1").asEqualTo
 
