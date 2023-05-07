@@ -10,7 +10,7 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import sttp.client3.{HttpClientSyncBackend, Identity, SttpBackend}
 import sttp.model.Header
-import uk.org.devthings.scala.wiremockapi.remapping.WiremockExpectation
+import uk.org.devthings.scala.wiremockapi.remapping.WireMockExpectation
 
 abstract class BaseSpec extends AnyWordSpec with ScalaFutures with ImpatientPatience with Matchers with BeforeAndAfter {
 
@@ -35,11 +35,11 @@ abstract class BaseSpec extends AnyWordSpec with ScalaFutures with ImpatientPati
     def stubAnyRequestResponse(responseDefinitionBuilder: ResponseDefinitionBuilder): Unit =
       instance.stubAnyRequestResponse(responseDefinitionBuilder)
 
-    def stubExpectation(wiremockExpectation: WiremockExpectation): Unit =
-      instance.stubExpectation(wiremockExpectation)
+    def stubExpectation(wireMockExpectation: WireMockExpectation): Unit =
+      instance.stubExpectation(wireMockExpectation)
 
-    def verify(wiremockExpectation: WiremockExpectation): Unit =
-      instance.verify(wiremockExpectation)
+    def verify(wireMockExpectation: WireMockExpectation): Unit =
+      instance.verify(wireMockExpectation)
 
   }
 

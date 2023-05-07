@@ -4,7 +4,7 @@ import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.matching._
 
 object BodyValueExpectation {
-  import WiremockExpectation.ops._
+  import WireMockExpectation.ops._
 
   val any: BodyValueExpectation = BodyValueExpectation(".*".asMatching)
 

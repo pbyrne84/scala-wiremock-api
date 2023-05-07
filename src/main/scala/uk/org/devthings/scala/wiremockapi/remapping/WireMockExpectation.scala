@@ -4,22 +4,22 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.{MappingBuilder, WireMock}
 import com.github.tomakehurst.wiremock.matching.{MultipartValuePattern, RequestPatternBuilder, StringValuePattern}
 
-object WiremockExpectation {
+object WireMockExpectation {
 
-  val willRespondOk: WiremockExpectation = willRespondStatus(200)
+  val willRespondOk: WireMockExpectation = willRespondStatus(200)
   // Wiremock will return 404 by default on a non match but that leads to potentially confusing log output
-  val willRespondNotFound: WiremockExpectation = willRespondStatus(404)
-  def willRespondStatus(status: Int): WiremockExpectation = WiremockExpectation().willReturnStatus(status)
-  val willRespondInternalServerError: WiremockExpectation = willRespondStatus(500)
+  val willRespondNotFound: WireMockExpectation = willRespondStatus(404)
+  def willRespondStatus(status: Int): WireMockExpectation = WireMockExpectation().willReturnStatus(status)
+  val willRespondInternalServerError: WireMockExpectation = willRespondStatus(500)
 
   def applyAsScenario(
-      expectations: List[WiremockExpectation],
+      expectations: List[WireMockExpectation],
       server: WireMockServer,
       scenarioInfoGenerator: ScenarioInfoGenerator = ScenarioInfoGenerator.default
-  ): List[WiremockExpectation] = {
+  ): List[WireMockExpectation] = {
     val maxIndex = expectations.size - 1
 
-    expectations.zipWithIndex.map { case (expectation: WiremockExpectation, index) =>
+    expectations.zipWithIndex.map { case (expectation: WireMockExpectation, index) =>
       val scenarioInfo: ScenarioInfo =
         scenarioInfoGenerator.createScenarioInfo(scenarioInfoGenerator.scenarioName, index, maxIndex)
 
@@ -36,12 +36,12 @@ object WiremockExpectation {
       with WireMockValueExpectationOps
       with ResponseBodyOps {
 
-    implicit class WiremockExpectationsOps(expectations: List[WiremockExpectation]) {
+    implicit class WiremockExpectationsOps(expectations: List[WireMockExpectation]) {
       def applyAsScenario(
           server: WireMockServer,
           scenarioInfoGenerator: ScenarioInfoGenerator = ScenarioInfoGenerator.default
-      ): List[WiremockExpectation] = {
-        WiremockExpectation.applyAsScenario(expectations, server, scenarioInfoGenerator)
+      ): List[WireMockExpectation] = {
+        WireMockExpectation.applyAsScenario(expectations, server, scenarioInfoGenerator)
       }
     }
   }
@@ -49,7 +49,7 @@ object WiremockExpectation {
 
 case class ScenarioInfo(scenarioName: String, expectedCurrentState: String, nextState: String)
 
-case class WiremockExpectation(
+case class WireMockExpectation(
     requestMethod: RequestMethod = RequestMethod.Any,
     urlExpectation: UrlExpectation = UrlExpectation.anyUrlMatcher,
     headerExpectations: Seq[NameValueExpectation] = List.empty,
@@ -57,56 +57,56 @@ case class WiremockExpectation(
     queryParamExpectations: Seq[NameValueExpectation] = List.empty,
     bodyExpectations: Seq[BodyValueExpectation] = List.empty,
     multiPartExpectations: Seq[WiremockMultiPartRequestBodyExpectation] = List.empty,
-    response: WiremockResponse = WiremockResponse.statusOk,
+    response: WireMockResponse = WireMockResponse.statusOk,
     maybeScenarioInfo: Option[ScenarioInfo] = None
 ) {
 
-  def expectsUrl(urlExpectation: UrlExpectation): WiremockExpectation =
+  def expectsUrl(urlExpectation: UrlExpectation): WireMockExpectation =
     copy(urlExpectation = urlExpectation)
 
-  def expectsMethod(requestMethod: RequestMethod): WiremockExpectation =
+  def expectsMethod(requestMethod: RequestMethod): WireMockExpectation =
     copy(requestMethod = requestMethod)
 
-  def setScenarioInfo(scenarioInfo: ScenarioInfo): WiremockExpectation =
+  def setScenarioInfo(scenarioInfo: ScenarioInfo): WireMockExpectation =
     copy(maybeScenarioInfo = Some(scenarioInfo))
 
-  def expectsHeader(headerExpectation: NameValueExpectation): WiremockExpectation =
+  def expectsHeader(headerExpectation: NameValueExpectation): WireMockExpectation =
     copy(headerExpectations = headerExpectations :+ headerExpectation)
 
-  def expectsHeaders(headerExpectations: NameValueExpectation*): WiremockExpectation =
+  def expectsHeaders(headerExpectations: NameValueExpectation*): WireMockExpectation =
     copy(headerExpectations = headerExpectations ++ headerExpectations)
 
-  def expectsCookie(cookieExpectation: NameValueExpectation): WiremockExpectation =
+  def expectsCookie(cookieExpectation: NameValueExpectation): WireMockExpectation =
     copy(cookieExpectations = cookieExpectations :+ cookieExpectation)
 
-  def expectsQueryParam(queryParamExpectation: NameValueExpectation): WiremockExpectation =
+  def expectsQueryParam(queryParamExpectation: NameValueExpectation): WireMockExpectation =
     copy(queryParamExpectations = queryParamExpectations :+ queryParamExpectation)
 
-  def expectsQueryParams(queryParamExpectations: NameValueExpectation*): WiremockExpectation =
+  def expectsQueryParams(queryParamExpectations: NameValueExpectation*): WireMockExpectation =
     copy(queryParamExpectations = queryParamExpectations :++ queryParamExpectations)
 
-  def expectsBody(bodyExpectation: BodyValueExpectation): WiremockExpectation =
+  def expectsBody(bodyExpectation: BodyValueExpectation): WireMockExpectation =
     copy(bodyExpectations = bodyExpectations :+ bodyExpectation)
 
-  def expectsBodies(additionalBodyExpectations: BodyValueExpectation*): WiremockExpectation =
+  def expectsBodies(additionalBodyExpectations: BodyValueExpectation*): WireMockExpectation =
     copy(bodyExpectations = bodyExpectations ++ additionalBodyExpectations)
 
-  def expectsMultiPartRequest(bodyExpectation: WiremockMultiPartRequestBodyExpectation): WiremockExpectation =
+  def expectsMultiPartRequest(bodyExpectation: WiremockMultiPartRequestBodyExpectation): WireMockExpectation =
     copy(multiPartExpectations = multiPartExpectations :+ bodyExpectation)
 
-  def willReturnStatus(status: Int): WiremockExpectation = {
+  def willReturnStatus(status: Int): WireMockExpectation = {
     copy(response = response.withStatus(status))
   }
 
-  def willRespondWithBody(responseBody: ResponseBody): WiremockExpectation = {
+  def willRespondWithBody(responseBody: ResponseBody): WireMockExpectation = {
     copy(response = response.withResponseBody(responseBody))
   }
 
-  def willRespondWithHeader(name: String, values: String*): WiremockExpectation = {
+  def willRespondWithHeader(name: String, values: String*): WireMockExpectation = {
     copy(response = response.withHeader(name, values: _*))
   }
 
-  def willRespondWith(wiremockResponse: WiremockResponse): WiremockExpectation =
+  def willRespondWith(wiremockResponse: WireMockResponse): WireMockExpectation =
     copy(response = wiremockResponse)
 
   def asExpectationBuilder: MappingBuilder = {

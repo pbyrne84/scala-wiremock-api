@@ -3,7 +3,7 @@ package uk.org.devthings.scala.wiremockapi.remapping
 import org.scalatest.prop.TableDrivenPropertyChecks
 import sttp.model.{Header, StatusCode}
 import uk.org.devthings.scala.wiremockapi.BaseSpec
-class WiremockResponseSpec extends BaseSpec with TableDrivenPropertyChecks {
+class WireMockResponseSpec extends BaseSpec with TableDrivenPropertyChecks {
 
   before {
     reset()
@@ -22,8 +22,8 @@ class WiremockResponseSpec extends BaseSpec with TableDrivenPropertyChecks {
     import sttp.client3._
 
     "return a 200 with empty body for a default constructor" in {
-      val defaultConstructor = WiremockResponse()
-      val emptySuccess = WiremockResponse.statusOk
+      val defaultConstructor = WireMockResponse()
+      val emptySuccess = WireMockResponse.statusOk
 
       val options = Table(
         ("type", "value"),
@@ -54,7 +54,7 @@ class WiremockResponseSpec extends BaseSpec with TableDrivenPropertyChecks {
           | "a" : "value"
           |}""".stripMargin
 
-      val wirMockResponse = WiremockResponse()
+      val wirMockResponse = WireMockResponse()
         .withResponseBody(
           JsonResponseBody(
             jsonContent

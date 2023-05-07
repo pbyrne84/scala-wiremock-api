@@ -14,11 +14,11 @@ import scala.jdk.CollectionConverters.{CollectionHasAsScala, MapHasAsScala}
   * Verify request with duplicate query params https://github.com/wiremock/wiremock/issues/398 is not supported yet
   * https://github.com/wiremock/wiremock/pull/2110
   */
-class WiremockExpectationSpec extends BaseSpec with TableDrivenPropertyChecks {
+class WireMockExpectationSpec extends BaseSpec with TableDrivenPropertyChecks {
   import sttp.client3._
   // Extension methods for tuples to expectation, a bit more finger friendly.
 
-  import WiremockExpectation.ops._
+  import WireMockExpectation.ops._
 
   private val methodRequestMappings = List(
     (RequestMethod.Any, basicRequest.get _),
@@ -57,7 +57,7 @@ class WiremockExpectationSpec extends BaseSpec with TableDrivenPropertyChecks {
   "wiremock expectation" should {
 
     "match and verify an empty request on default" in {
-      val default = WiremockExpectation.willRespondOk
+      val default = WireMockExpectation.willRespondOk
       wireMock.stubExpectation(default)
 
       val request = basicRequest.get(uri"${wireMock.baseRequestUrl}/")
@@ -70,7 +70,7 @@ class WiremockExpectationSpec extends BaseSpec with TableDrivenPropertyChecks {
     }
 
     "match and verify all additional get values on default" in {
-      val default = WiremockExpectation.willRespondOk
+      val default = WireMockExpectation.willRespondOk
       wireMock.stubExpectation(default)
 
       val request = basicRequest
@@ -96,7 +96,7 @@ class WiremockExpectationSpec extends BaseSpec with TableDrivenPropertyChecks {
       forAll(allMethods) { (method, call) =>
         reset()
 
-        val default = WiremockExpectation.willRespondOk.expectsMethod(method)
+        val default = WireMockExpectation.willRespondOk.expectsMethod(method)
         wireMock.stubExpectation(default)
 
         val request = call(uri"${wireMock.baseRequestUrl}/url?param1=2")
@@ -122,7 +122,7 @@ class WiremockExpectationSpec extends BaseSpec with TableDrivenPropertyChecks {
       forAll(allMethods) { (currentHttpMethod, validCall) =>
         reset()
 
-        val default = WiremockExpectation.willRespondOk.expectsMethod(currentHttpMethod)
+        val default = WireMockExpectation.willRespondOk.expectsMethod(currentHttpMethod)
         wireMock.stubExpectation(default)
 
         val otherMethodCalls: List[(RequestMethod, Uri => Request[Either[String, String], Any])] = methodRequestMappings
@@ -142,8 +142,8 @@ class WiremockExpectationSpec extends BaseSpec with TableDrivenPropertyChecks {
     }
 
     "map headers to their wiremock equivalent" in {
-      val expectation = allOperations.foldLeft(WiremockExpectation.willRespondOk) {
-        case (expectation: WiremockExpectation, valueExpectation: NameValueExpectation) =>
+      val expectation = allOperations.foldLeft(WireMockExpectation.willRespondOk) {
+        case (expectation: WireMockExpectation, valueExpectation: NameValueExpectation) =>
           expectation.expectsHeader(valueExpectation)
       }
 
@@ -177,8 +177,8 @@ class WiremockExpectationSpec extends BaseSpec with TableDrivenPropertyChecks {
 
     "map parameters to their wiremock equivalent" in {
       val expectation = allOperations
-        .foldLeft(WiremockExpectation.willRespondOk) {
-          case (expectation: WiremockExpectation, valueExpectation: NameValueExpectation) =>
+        .foldLeft(WireMockExpectation.willRespondOk) {
+          case (expectation: WireMockExpectation, valueExpectation: NameValueExpectation) =>
             expectation.expectsQueryParam(valueExpectation)
         }
 
@@ -198,8 +198,8 @@ class WiremockExpectationSpec extends BaseSpec with TableDrivenPropertyChecks {
 
     "map cookies to their wiremock equivalent" in {
       val expectation = allOperations
-        .foldLeft(WiremockExpectation.willRespondOk) {
-          case (expectation: WiremockExpectation, valueExpectation: NameValueExpectation) =>
+        .foldLeft(WireMockExpectation.willRespondOk) {
+          case (expectation: WireMockExpectation, valueExpectation: NameValueExpectation) =>
             expectation.expectsCookie(valueExpectation)
         }
 
@@ -250,7 +250,7 @@ class WiremockExpectationSpec extends BaseSpec with TableDrivenPropertyChecks {
       )
 
       forAll(mappings) { (_, maybeContentType, bodyValueExpectation) =>
-        val expectationWithBody = WiremockExpectation.willRespondOk
+        val expectationWithBody = WireMockExpectation.willRespondOk
           .expectsBody(bodyValueExpectation)
 
         val builtWiremockExpectation = expectationWithBody.asExpectationBuilder
@@ -292,7 +292,7 @@ class WiremockExpectationSpec extends BaseSpec with TableDrivenPropertyChecks {
         "body-containing".asBodyContains
       )
 
-      val expectation = WiremockExpectation.willRespondOk
+      val expectation = WireMockExpectation.willRespondOk
         .expectsBody(expectations.head)
         .expectsBodies(expectations.tail: _*)
 
