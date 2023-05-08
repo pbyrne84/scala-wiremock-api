@@ -48,13 +48,11 @@ class LooseWireMockExpectationTightVerificationExampleSpec extends BaseSpec {
         _ <- callServer(path = "api-path-2", body = expectedBody2)
       } yield true
 
-      // A None can ne cause by either call failing
-      result shouldBe Some(true)
-
       import uk.org.devthings.scala.wiremockapi.remapping.WireMockExpectation.ops._
 
       val paramExpectation = ("param1" -> "paramValue1").asEqualTo
 
+      // Do verifies first as the shouldBe failure will be non-informative in this case
       wireMock.verify(
         firstCallLooseExpectation
           .expectsBody(BodyValueExpectation.equalsJson(expectedBody1))
@@ -66,6 +64,9 @@ class LooseWireMockExpectationTightVerificationExampleSpec extends BaseSpec {
           .expectsBody(BodyValueExpectation.equalsJson(expectedBody2))
           .expectsQueryParam(paramExpectation)
       )
+
+      // A None can be cause by either call failing
+      result shouldBe Some(true)
 
     }
   }
@@ -91,5 +92,4 @@ class LooseWireMockExpectationTightVerificationExampleSpec extends BaseSpec {
       None
     }
   }
-
 }
