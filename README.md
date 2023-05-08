@@ -1,7 +1,9 @@
 # scala-wiremock-api
 
 ## Usage
-"uk.org.devthings" %% "scala-wiremock-api" % "0.1.0"
+```text
+"uk.org.devthings" %% "scala-wiremock-api" % "0.1.10" % Test,
+```
 
 
 ## Wiremock logging tip
@@ -47,11 +49,11 @@ I include myself in that statement.
 Scenario based testing is also held together by strings which make testing retry operations a
 tad ugly. This is simply now solved by **WiremockExpectation.applyAsScenario**
 
-**WiremockScenarioExpectationSpec** (<https://github.com/pbyrne84/scala-wiremock-api/blob/main/src/test/scala/uk/org/devthings/scala/wiremockapi/remapping/WiremockScenarioExpectationSpec.scala>)
+**WireMockScenarioExpectationSpec** (<https://github.com/pbyrne84/scala-wiremock-api/blob/main/src/test/scala/uk/org/devthings/scala/wiremockapi/remapping/WiremockScenarioExpectationSpec.scala>)
 ```scala
 "scenario" should {
   "handle sequential calls to an api so we can mimic things like retrying" in {
-    import WiremockExpectation.ops._
+    import WireMockExpectation.ops._
 
     val (expectedJsonResponseBody1, expectation1) = generateAnyExpectation(0)
     val (expectedJsonResponseBody2, expectation2) = generateAnyExpectation(1)
@@ -78,7 +80,7 @@ tad ugly. This is simply now solved by **WiremockExpectation.applyAsScenario**
 
   }
 
-  def generateAnyExpectation(index: Int): (Json, WiremockExpectation) = {
+  def generateAnyExpectation(index: Int): (Json, WireMockExpectation) = {
     // language=json
     val jsonResponseBody = json.unsafeParse(s"""
         |{
@@ -86,11 +88,10 @@ tad ugly. This is simply now solved by **WiremockExpectation.applyAsScenario**
         |}
         |""".stripMargin)
 
-    jsonResponseBody -> WiremockExpectation.default
-      .withResponse(
-        WiremockResponse.emptySuccess
-          .withStatus(200 + index)
-          .withResponseBody(ResponseBody.jsonBody(jsonResponseBody.spaces2))
+    jsonResponseBody -> WireMockExpectation
+      .willRespondStatus(200 + index)
+      .willRespondWithBody(
+         jsonResponseBody.spaces2.asJsonResponse
       )
   }
 }
@@ -141,16 +142,16 @@ On a personal level load factor should always be taken into account.
 https://wiki.c2.com/?LoadFactor
 
 How long does it take you to write the code, how long to do the test to a high standard that covers both the safety and 
-developer headache aspects. Tests are fun, they allow communication, exploration of technology and the ability to change 
-tact easily. Implementation sunk cost fallacies suck.
+developer headache aspects. Tests are fun. They increase communication, easily allow the exploration of technology and 
+enable the ability to change tact more easily. Implementation sunk cost fallacies suck.
 
-There likely needs to be some Pact testing for things like backwards compatibility checks, but if problems are found on 
+There likely needs to be some Pact testing for things like backward compatibility checks, but if problems are found on 
 that level, then better practices in the development of the software are needed, work smarter not harder. Working harder
 also means more tiresome and being tired leads to more mistakes.
 
 ## Mechanism
 
-There is simply a few case classes with the main one **WiremockExpectation** having **asExpectationBuilder** and 
+There is simply a few case classes with the main one **WireMockExpectation** having **asExpectationBuilder** and 
 **asVerificationBuilder** operations. This enables the ability to do the main loose expectation then use the copy 
 operation/fluent methods to create a tight operation for the verification.
 
@@ -167,7 +168,7 @@ versus
 BodyValueExpectation.equalsJson("{}").withDisabledAutoHeader
 ```
 
-Json responses also add the header. In reality much of my life dealing in microservices we are dealing with json.
+Json responses also add the header. In reality, much of my life dealing in microservices we are dealing with json.
 
 ```scala
 case class JsonResponseBody(value: String) extends ResponseBody {
@@ -175,11 +176,11 @@ case class JsonResponseBody(value: String) extends ResponseBody {
 }
 ```
 
-### Example LooseWiremockExpectationTightVerificationExampleSpec
-<https://github.com/pbyrne84/scala-wiremock-api/blob/main/src/test/scala/uk/org/devthings/scala/wiremockapi/remapping/LooseWiremockExpectationTightVerificationExampleSpec.scala>
+### Example LooseWireMockExpectationTightVerificationExampleSpec
+<https://github.com/pbyrne84/scala-wiremock-api/blob/main/src/test/scala/uk/org/devthings/scala/wiremockapi/remapping/LooseWireMockExpectationTightVerificationExampleSpec.scala>
 
 ```scala
-class LooseWiremockExpectationTightVerificationExampleSpec extends BaseSpec {
+class LooseWireMockExpectationTightVerificationExampleSpec extends BaseSpec {
 
   before {
     reset()
@@ -187,6 +188,8 @@ class LooseWiremockExpectationTightVerificationExampleSpec extends BaseSpec {
 
   // Simple example where 404's could lead to confusion.
   "Using a loose expectation and tight verification" should {
+    import WireMockExpectation.ops._
+
     "create a test we can be sure is correct easily" in {
 
       // language=json
@@ -205,14 +208,14 @@ class LooseWiremockExpectationTightVerificationExampleSpec extends BaseSpec {
       // as people can use the string expectation instead of the json expectation meaning the expectation is not
       // json formatting safe.
       val firstCallLooseExpectation =
-        WiremockExpectation.default
-          .setMethod(Post) // we could skip the method here and add it later but method is pretty hard to fail on
-          .setUrlExpectation(UrlExpectation.equalsPath("/api-path-1"))
+        WireMockExpectation.willRespondOk
+          .expectsMethod(Post) // we could skip the method here and add it later but method is pretty hard to fail on
+          .expectsUrl("/api-path-1".asUrlPathEquals)
 
       val secondCallLooseExpectation =
-        WiremockExpectation.default
-          .setMethod(Post) // we could skip the method here and add it later but method is pretty hard to fail on
-          .setUrlExpectation(UrlExpectation.equalsPath("/api-path-2"))
+        WireMockExpectation.willRespondOk
+          .expectsMethod(Post) // we could skip the method here and add it later but method is pretty hard to fail on
+          .expectsUrl("/api-path-2".asUrlPathEquals)
 
       wireMock.stubExpectation(firstCallLooseExpectation)
       wireMock.stubExpectation(secondCallLooseExpectation)
@@ -222,24 +225,25 @@ class LooseWiremockExpectationTightVerificationExampleSpec extends BaseSpec {
         _ <- callServer(path = "api-path-2", body = expectedBody2)
       } yield true
 
-      // A None can ne cause by either call failing
-      result shouldBe Some(true)
-
-      import WireMockValueExpectation.ops._
+      import uk.org.devthings.scala.wiremockapi.remapping.WireMockExpectation.ops._
 
       val paramExpectation = ("param1" -> "paramValue1").asEqualTo
 
+      // Do verifies first as the shouldBe failure will be non-informative in this case
       wireMock.verify(
         firstCallLooseExpectation
-          .withBodyExpectation(BodyValueExpectation.equalsJson(expectedBody1))
-          .withQueryParamExpectation(paramExpectation)
+          .expectsBody(BodyValueExpectation.equalsJson(expectedBody1))
+          .expectsQueryParam(paramExpectation)
       )
 
       wireMock.verify(
         secondCallLooseExpectation
-          .withBodyExpectation(BodyValueExpectation.equalsJson(expectedBody2))
-          .withQueryParamExpectation(paramExpectation)
+          .expectsBody(BodyValueExpectation.equalsJson(expectedBody2))
+          .expectsQueryParam(paramExpectation)
       )
+
+      // A None can be cause by either call failing
+      result shouldBe Some(true)
 
     }
   }
@@ -265,8 +269,8 @@ class LooseWiremockExpectationTightVerificationExampleSpec extends BaseSpec {
       None
     }
   }
-
 }
+
 ```
 
 
