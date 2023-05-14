@@ -12,7 +12,7 @@ ThisBuild / dynverSonatypeSnapshots := true
 inThisBuild(
   List(
     organization := "uk.org.devthings",
-    homepage := Some(url("https://github.com/sbt/sbt-ci-release")),
+    homepage := Some(url("https://github.com/pbyrne84/scala-wiremock-api")),
     // Alternatively License.Apache2 see https://github.com/sbt/librarymanagement/blob/develop/core/src/main/scala/sbt/librarymanagement/License.scala
     licenses := List("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
     developers := List(
