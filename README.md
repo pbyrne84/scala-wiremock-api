@@ -1,8 +1,11 @@
 # scala-wiremock-api
 
+[![scala-wiremock-api Scala version support](https://index.scala-lang.org/pbyrne84/scala-wiremock-api/scala-wiremock-api/latest.svg)](https://index.scala-lang.org/pbyrne84/scala-wiremock-api/scala-wiremock-api)
+
+
 ## Usage
-```text
-"uk.org.devthings" %% "scala-wiremock-api" % "0.1.10" % Test,
+```scala
+"uk.org.devthings" %% "scala-wiremock-api" % "{version-from-above}" % Test
 ```
 
 
